@@ -27,14 +27,17 @@ app.get("/get/jobs", async (req, res) => {
 });
 app.post("/create/job", async (req, res) => {
   try {
-    const { company_logo, company_name, opening_site, type, email } = req.body;
+    const { company_logo, company_name, opening_site, type, email, tags } =
+      req.body;
     const Job = await Jobs.create({
       company_logo,
       company_name,
       opening_site,
       type,
       email,
+      tags,
     });
+    console.log(Job);
     Job.save();
     res.json(Job).status(200);
   } catch (error) {

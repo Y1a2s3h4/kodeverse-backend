@@ -7,8 +7,9 @@ const Jobs = new mongoose.Schema({
   },
   company_logo: String,
   company_name: String,
+  email: String,
   opening_site: String,
   type: String,
-  email: String,
+  tags: mongoose.Schema.Types.Mixed,
 });
 module.exports = mongoose.model("Jobscollections", Jobs);
