@@ -37,9 +37,32 @@ app.post("/create/job", async (req, res) => {
       email,
       tags,
     });
-    console.log(Job);
     Job.save();
     res.json(Job).status(200);
+  } catch (error) {
+    res.json({ error }).status(400);
+  }
+});
+app.patch("/update/job", async (req, res) => {
+  try {
+    const { _id, company_logo, company_name, opening_site, type, email, tags } =
+      req.body;
+    await Jobs.updateOne(
+      { _id },
+      { company_logo, company_name, opening_site, type, email, tags }
+    );
+    const jobsData = await Jobs.find({});
+    res.json(jobsData).status(200);
+  } catch (error) {
+    res.json({ error }).status(400);
+  }
+});
+app.delete("/delete/job", async (req, res) => {
+  try {
+    const { jobId } = req.query;
+    await Jobs.deleteOne({ _id: jobId });
+    const jobsData = await Jobs.find({});
+    res.json(jobsData).status(200);
   } catch (error) {
     res.json({ error }).status(400);
   }
