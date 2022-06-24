@@ -55,6 +55,8 @@ app.post("/create/job", async (req, res) => {
       type,
       email,
       tags,
+      job,
+      domain,
     });
     Job.save();
     res.json(Job).status(200);
