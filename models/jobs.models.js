@@ -7,6 +7,8 @@ const Jobs = new mongoose.Schema({
   },
   company_logo: String,
   company_name: String,
+  job: String,
+  domain: String,
   email: String,
   opening_site: String,
   type: String,

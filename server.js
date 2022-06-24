@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const Jobs = require("./models/jobs.models");
 const cors = require("cors");
+const rwClient = require("./tweetClient/tweetClient.js");
 
 app.use(express.json());
 app.use(cors());
@@ -17,6 +18,16 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
+app.post("/tweet", async (req, res) => {
+  try {
+    const data = await rwClient.v1.tweet("Hello, yash here");
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.send(error);
+  }
+});
+
 app.get("/get/jobs", async (req, res) => {
   try {
     const jobsData = await Jobs.find({});
@@ -27,8 +38,16 @@ app.get("/get/jobs", async (req, res) => {
 });
 app.post("/create/job", async (req, res) => {
   try {
-    const { company_logo, company_name, opening_site, type, email, tags } =
-      req.body;
+    const {
+      company_logo,
+      company_name,
+      opening_site,
+      type,
+      email,
+      tags,
+      job,
+      domain,
+    } = req.body;
     const Job = await Jobs.create({
       company_logo,
       company_name,
@@ -45,11 +64,29 @@ app.post("/create/job", async (req, res) => {
 });
 app.patch("/update/job", async (req, res) => {
   try {
-    const { _id, company_logo, company_name, opening_site, type, email, tags } =
-      req.body;
+    const {
+      _id,
+      company_logo,
+      company_name,
+      opening_site,
+      type,
+      email,
+      tags,
+      job,
+      domain,
+    } = req.body;
     await Jobs.updateOne(
       { _id },
-      { company_logo, company_name, opening_site, type, email, tags }
+      {
+        company_logo,
+        company_name,
+        opening_site,
+        type,
+        email,
+        tags,
+        job,
+        domain,
+      }
     );
     const jobsData = await Jobs.find({});
     res.json(jobsData).status(200);
