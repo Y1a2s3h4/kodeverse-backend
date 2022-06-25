@@ -58,16 +58,6 @@ app.post("/create/job", async (req, res) => {
       job,
       domain,
     });
-    console.log({
-      company_logo,
-      company_name,
-      opening_site,
-      type,
-      email,
-      tags,
-      job,
-      domain,
-    });
     Job.save();
     res.json(Job).status(200);
   } catch (error) {
