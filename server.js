@@ -6,7 +6,10 @@ const mongoose = require("mongoose");
 const Jobs = require("./models/jobs.models");
 const cors = require("cors");
 const rwClient = require("./tweetClient/tweetClient.js");
-
+const bot = require("./telegramBot/telegramBotTest.js");
+const axios = require("axios");
+// const { extra: Extra, markup: Markup } = require("telegraf");
+const { Scenes, Stage, session, Markup } = require("telegraf");
 app.use(express.json());
 app.use(cors());
 
@@ -19,12 +22,45 @@ mongoose
   .catch((err) => console.log(err));
 
 app.post("/tweet", async (req, res) => {
+  const { tweet_body } = req.body;
   try {
-    const data = await rwClient.v1.tweet("Hello, yash here");
+    const data = await rwClient.v1.tweet(tweet_body);
     res.send(data);
   } catch (error) {
     console.log(error);
     res.send(error);
+  }
+});
+app.post("/linkedin", async (req, res) => {
+  try {
+    const { post } = req.body;
+    const data = await axios.post(
+      `https://api.linkedin.com/v2/ugcPosts`,
+      {
+        author: "urn:li:person:JOQZmVn3rw",
+        lifecycleState: "PUBLISHED",
+        specificContent: {
+          "com.linkedin.ugc.ShareContent": {
+            shareCommentary: {
+              text: post,
+            },
+            shareMediaCategory: "NONE",
+          },
+        },
+        visibility: {
+          "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+        },
+      },
+      {
+        headers: {
+          Authorization:
+            "Bearer AQWumzKx379Jy2DtImAJSxTIhvbcUn9nZSST_ZCwXI0miVXFZ9v3IHH68zBpmzuif75TyKi0hG7Ksil4QMq_KkFLhiePC_w9RYBD2Z-kVruZGjm98H--RYbHsl2uC6ynAeskSl1M4JILaNvACHCFMrXaz5H-WFfG8dfMquMq2UlhZFW5x4yo0IdcodZ26qMei5vW-cPGYHT4343si8pjDpRGlGGadd7hzTCQafPZ3rhKN22PC5gwju_U94I4pCYinXACmRWc9IUUN-wJcdRMM3ypr3jzq2Wb_r2bD_q4xVaukEm4TEziWNvB3GAGnQz2TbWLrHAz1OOzwkWOWZafaoOHGA1kFw",
+        },
+      }
+    );
+    res.send(data.data);
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -108,7 +144,135 @@ app.delete("/delete/job", async (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(
-    String.fromCharCode(55357) + " Server Running on http://localhost:" + PORT
-  )
+  console.log("🔥 Server Running on http://localhost:" + PORT)
 );
+
+// bot.action("message_func", (ctx) => {
+//   ctx.reply("Enter Your Message In The Given Format");
+// });
+
+const superWizard = new Scenes.WizardScene(
+  "super-wizard",
+  (ctx) => {
+    if (+ctx.chat.id < 0) {
+      return;
+    }
+    ctx.reply("Start\n1)Company Name");
+    ctx.session.command = ctx.message.text;
+    console.log(ctx.chat, ctx.session, ctx.message.text);
+
+    return ctx.wizard.next();
+  },
+  (ctx) => {
+    // if (ctx.session.company_name) {
+    ctx.reply("2) Type:");
+
+    ctx.session.company_name = ctx.message.text;
+    console.log(ctx.chat, ctx.session, ctx.message.text);
+    return ctx.wizard.next();
+    // } else {
+    //   ctx.reply("1)Company Name:");
+    //   ctx.session.company_name = ctx.message.text;
+    //   console.log(ctx.chat, ctx.session, ctx.message.text);
+
+    //   return ctx.wizard.next();
+    // }
+  },
+  (ctx) => {
+    // if (ctx.session.type) {
+    ctx.reply("3) Job:");
+    ctx.session.type = ctx.message.text;
+    console.log(ctx.chat, ctx.session);
+    return ctx.wizard.next();
+    // } else {
+    //   ctx.reply("2) Type:");
+
+    //   ctx.session.type = ctx.message.text;
+    //   console.log(ctx.chat, ctx.session, ctx.message.text);
+    //   return ctx.wizard.next();
+    // }
+  },
+  (ctx) => {
+    // if (ctx.session.job) {
+
+    ctx.reply("4) Domain:");
+    ctx.session.job = ctx.message.text;
+    console.log(ctx.chat, ctx.session);
+    return ctx.wizard.next();
+    // } else {
+    //   console.log(ctx.chat, ctx.session);
+    //   ctx.reply("3) Job:");
+    //   ctx.session.job = ctx.message.text;
+    //   return ctx.wizard.next();
+    // }
+  },
+  (ctx) => {
+    // if (ctx.session.domain) {
+
+    ctx.reply("5) Email:");
+    ctx.session.domain = ctx.message.text;
+    console.log(ctx.chat, ctx.session);
+    return ctx.wizard.next();
+    // } else {
+    //   console.log(ctx.chat, ctx.session);
+
+    //   ctx.reply("4) Domain:");
+    //   ctx.session.domain = ctx.message.text;
+    //   return ctx.wizard.next();
+    // }
+  },
+  (ctx) => {
+    // if (ctx.session.community) {
+    ctx.session.email = ctx.message.text;
+
+    ctx.session.groups = { 1: -1001727141534 };
+    console.log(ctx.chat, ctx.session);
+    ctx.reply(
+      "In which group this message you want to share: \n1) testing group"
+    );
+    return ctx.wizard.next();
+    // } else {
+    //   console.log(ctx.chat, ctx.session);
+
+    //   ctx.reply("7) Join community:");
+    //   ctx.session.community = ctx.message.text;
+    //   return ctx.wizard.next();
+    // }
+  },
+  (ctx) => {
+    ctx.session.group_no = ctx.message.text;
+    console.log(ctx.chat, ctx.session);
+    ctx.reply("Now run command '/send' to share this message in group.");
+    return ctx.wizard.next();
+  }
+);
+superWizard.command("cancel", (ctx) => {
+  ctx.scene.leave();
+  ctx.reply("Cancelled!!!");
+});
+superWizard.command("send", (ctx) => {
+  bot.telegram.sendMessage(
+    ctx.session.groups[ctx.session.group_no],
+    `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community:`
+  );
+  ctx.scene.leave();
+});
+const stage = new Scenes.Stage([superWizard]);
+bot.use(session());
+bot.use(stage.middleware());
+bot.command("start", (ctx) => {
+  ctx.scene.enter("super-wizard");
+});
+
+bot.hears("/show_message", (ctx) => {
+  ctx.reply(
+    `Your Message Looks Like This:-\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nHashtags: ${ctx.session.hashtags}\nJoin Community: ${ctx.session.community}`
+  );
+});
+bot.command("send", (ctx) => {
+  bot.telegram.sendMessage(
+    ctx.session.groups[ctx.session.group_no],
+    `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}`
+  );
+});
+bot.launch();
