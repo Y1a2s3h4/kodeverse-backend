@@ -8,7 +8,6 @@ const cors = require("cors");
 const rwClient = require("./tweetClient/tweetClient.js");
 const bot = require("./telegramBot/telegramBotTest.js");
 const axios = require("axios");
-// const { extra: Extra, markup: Markup } = require("telegraf");
 const { Scenes, Stage, session, Markup } = require("telegraf");
 app.use(express.json());
 app.use(cors());
@@ -29,38 +28,6 @@ app.post("/tweet", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.send(error);
-  }
-});
-app.post("/linkedin", async (req, res) => {
-  try {
-    const { post } = req.body;
-    const data = await axios.post(
-      `https://api.linkedin.com/v2/ugcPosts`,
-      {
-        author: "urn:li:person:JOQZmVn3rw",
-        lifecycleState: "PUBLISHED",
-        specificContent: {
-          "com.linkedin.ugc.ShareContent": {
-            shareCommentary: {
-              text: post,
-            },
-            shareMediaCategory: "NONE",
-          },
-        },
-        visibility: {
-          "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
-        },
-      },
-      {
-        headers: {
-          Authorization:
-            "Bearer AQWumzKx379Jy2DtImAJSxTIhvbcUn9nZSST_ZCwXI0miVXFZ9v3IHH68zBpmzuif75TyKi0hG7Ksil4QMq_KkFLhiePC_w9RYBD2Z-kVruZGjm98H--RYbHsl2uC6ynAeskSl1M4JILaNvACHCFMrXaz5H-WFfG8dfMquMq2UlhZFW5x4yo0IdcodZ26qMei5vW-cPGYHT4343si8pjDpRGlGGadd7hzTCQafPZ3rhKN22PC5gwju_U94I4pCYinXACmRWc9IUUN-wJcdRMM3ypr3jzq2Wb_r2bD_q4xVaukEm4TEziWNvB3GAGnQz2TbWLrHAz1OOzwkWOWZafaoOHGA1kFw",
-        },
-      }
-    );
-    res.send(data.data);
-  } catch (error) {
-    console.log(error);
   }
 });
 
