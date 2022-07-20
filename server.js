@@ -121,20 +121,10 @@ app.listen(PORT, () =>
 const superWizard = new Scenes.WizardScene(
   "super-wizard",
   (ctx) => {
-    if (+ctx.chat.id < 0) {
-      return;
-    }
-    ctx.reply("Start\n1)Company Name");
-    ctx.session.command = ctx.message.text;
-    console.log(ctx.chat, ctx.session, ctx.message.text);
-
-    return ctx.wizard.next();
-  },
-  (ctx) => {
     // if (ctx.session.company_name) {
-    ctx.reply("2) Type:");
+    ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech");
+    ctx.session.command = ctx.message.text;
 
-    ctx.session.company_name = ctx.message.text;
     console.log(ctx.chat, ctx.session, ctx.message.text);
     return ctx.wizard.next();
     // } else {
@@ -146,9 +136,28 @@ const superWizard = new Scenes.WizardScene(
     // }
   },
   (ctx) => {
+    ctx.session.type = ctx.message.text === "1" ? "Tech" : "Non-Tech";
+    ctx.session.groups = { Tech: -1001727141534, "Non-Tech": -1001727141534 };
+    ctx.session.community =
+      ctx.session.type === "Tech"
+        ? "https://t.me/kodeverse/"
+        : "https://t.me/kodeverseNT/";
+    ctx.reply("2)Company Name: ");
+    console.log(ctx.chat, ctx.session, ctx.message.text);
+
+    return ctx.wizard.next();
+  },
+  (ctx) => {
     // if (ctx.session.type) {
-    ctx.reply("3) Job:");
-    ctx.session.type = ctx.message.text;
+    ctx.session.company_name = ctx.message.text;
+    ctx.reply("3) Job: Check Linkedin Page Job Posts | Thier  Career Site");
+    ctx.reply("4) Domain: IT, Software, Product, Engineering, Management");
+    ctx.session.job = "Check Linkedin Page Job Posts | Thier  Career Site";
+    ctx.session.domain =
+      ctx.session.type === "Tech"
+        ? "IT, Software, Product, Engineering, Management"
+        : "HR, Marketing, Operations, Finance, Sales";
+    ctx.reply("5) Email:");
     console.log(ctx.chat, ctx.session);
     return ctx.wizard.next();
     // } else {
@@ -160,56 +169,52 @@ const superWizard = new Scenes.WizardScene(
     // }
   },
   (ctx) => {
-    // if (ctx.session.job) {
-
-    ctx.reply("4) Domain:");
-    ctx.session.job = ctx.message.text;
-    console.log(ctx.chat, ctx.session);
-    return ctx.wizard.next();
-    // } else {
-    //   console.log(ctx.chat, ctx.session);
-    //   ctx.reply("3) Job:");
-    //   ctx.session.job = ctx.message.text;
-    //   return ctx.wizard.next();
-    // }
-  },
-  (ctx) => {
-    // if (ctx.session.domain) {
-
-    ctx.reply("5) Email:");
-    ctx.session.domain = ctx.message.text;
-    console.log(ctx.chat, ctx.session);
-    return ctx.wizard.next();
-    // } else {
-    //   console.log(ctx.chat, ctx.session);
-
-    //   ctx.reply("4) Domain:");
-    //   ctx.session.domain = ctx.message.text;
-    //   return ctx.wizard.next();
-    // }
-  },
-  (ctx) => {
-    // if (ctx.session.community) {
     ctx.session.email = ctx.message.text;
-
-    ctx.session.groups = { 1: -1001727141534 };
-    console.log(ctx.chat, ctx.session);
     ctx.reply(
-      "In which group this message you want to share: \n1) testing group"
+      "6) Do you want message for:\n1. Telegram\n2.Twitter\n3.Linkedin"
     );
+    console.log(ctx.chat, ctx.session);
     return ctx.wizard.next();
-    // } else {
-    //   console.log(ctx.chat, ctx.session);
-
-    //   ctx.reply("7) Join community:");
-    //   ctx.session.community = ctx.message.text;
-    //   return ctx.wizard.next();
-    // }
   },
   (ctx) => {
-    ctx.session.group_no = ctx.message.text;
+    ctx.session.message_for =
+      ctx.message.text === "1"
+        ? "Telegram"
+        : ctx.message.text === "2"
+        ? "Twitter"
+        : "Linkedin";
+    ctx.session.twitter_hashtags =
+      "#portfolio #job #kodeverse #jobs #resume #hiring #share #cv #recruiting #career #" +
+      ctx.session.company_name;
+    if (ctx.session.message_for === "Telegram") {
+      bot.telegram.sendMessage(
+        ctx.chat.id,
+        `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "Confirm & Send!", callback_data: "confirm" },
+                { text: "Delete!", callback_data: "delete" },
+              ],
+            ],
+          },
+        }
+      );
+    } else if (ctx.session.message_for === "Twitter") {
+      bot.telegram.sendMessage(
+        ctx.chat.id,
+        `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
+      );
+      ctx.scene.leave();
+    } else {
+      bot.telegram.sendMessage(
+        ctx.chat.id,
+        `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
+      );
+      ctx.scene.leave();
+    }
     console.log(ctx.chat, ctx.session);
-    ctx.reply("Now run command '/send' to share this message in group.");
     return ctx.wizard.next();
   }
 );
@@ -217,11 +222,18 @@ superWizard.command("cancel", (ctx) => {
   ctx.scene.leave();
   ctx.reply("Cancelled!!!");
 });
-superWizard.command("send", (ctx) => {
+superWizard.action("confirm", (ctx) => {
+  console.log(ctx, ctx.session);
   bot.telegram.sendMessage(
-    ctx.session.groups[ctx.session.group_no],
-    `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community:`
+    ctx.session.groups[ctx.session.type],
+    `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
   );
+  ctx.reply("Message Send 👍");
+  ctx.scene.leave();
+});
+superWizard.action("delete", (ctx) => {
+  ctx.session = {};
+  ctx.reply("Session Deleted!");
   ctx.scene.leave();
 });
 const stage = new Scenes.Stage([superWizard]);
@@ -234,12 +246,6 @@ bot.command("start", (ctx) => {
 bot.hears("/show_message", (ctx) => {
   ctx.reply(
     `Your Message Looks Like This:-\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nHashtags: ${ctx.session.hashtags}\nJoin Community: ${ctx.session.community}`
-  );
-});
-bot.command("send", (ctx) => {
-  bot.telegram.sendMessage(
-    ctx.session.groups[ctx.session.group_no],
-    `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}`
   );
 });
 bot.launch();

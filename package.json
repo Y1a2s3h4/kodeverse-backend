@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "author": "Y1a23h4\u001b[B\u001b[B\u001b[B\u001b[A\u001b[A\u001b[D\u001b[D\u001b[D\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~s3h4",
   "license": "MIT",
