@@ -124,8 +124,6 @@ const superWizard = new Scenes.WizardScene(
     // if (ctx.session.company_name) {
     ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech");
     ctx.session.command = ctx.message.text;
-
-    console.log(ctx.chat, ctx.session, ctx.message.text);
     return ctx.wizard.next();
     // } else {
     //   ctx.reply("1)Company Name:");
@@ -143,8 +141,6 @@ const superWizard = new Scenes.WizardScene(
         ? "https://t.me/kodeverse/"
         : "https://t.me/kodeverseNT/";
     ctx.reply("2)Company Name: ");
-    console.log(ctx.chat, ctx.session, ctx.message.text);
-
     return ctx.wizard.next();
   },
   (ctx) => {
@@ -158,7 +154,6 @@ const superWizard = new Scenes.WizardScene(
         ? "IT, Software, Product, Engineering, Management"
         : "HR, Marketing, Operations, Finance, Sales";
     ctx.reply("5) Email:");
-    console.log(ctx.chat, ctx.session);
     return ctx.wizard.next();
     // } else {
     //   ctx.reply("2) Type:");
@@ -173,7 +168,6 @@ const superWizard = new Scenes.WizardScene(
     ctx.reply(
       "6) Do you want message for:\n1. Telegram\n2.Twitter\n3.Linkedin"
     );
-    console.log(ctx.chat, ctx.session);
     return ctx.wizard.next();
   },
   (ctx) => {
@@ -214,7 +208,6 @@ const superWizard = new Scenes.WizardScene(
       );
       ctx.scene.leave();
     }
-    console.log(ctx.chat, ctx.session);
     return ctx.wizard.next();
   }
 );
@@ -223,7 +216,6 @@ superWizard.command("cancel", (ctx) => {
   ctx.reply("Cancelled!!!");
 });
 superWizard.action("confirm", (ctx) => {
-  console.log(ctx, ctx.session);
   bot.telegram.sendMessage(
     ctx.session.groups[ctx.session.type],
     `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
