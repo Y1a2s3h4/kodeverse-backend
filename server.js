@@ -10,6 +10,7 @@ const bot = require("./telegramBot/telegramBotTest.js");
 const axios = require("axios");
 const { Scenes, Stage, session, Markup } = require("telegraf");
 app.use(express.json());
+app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_BOT_API}`));
 app.use(cors());
 
 mongoose
