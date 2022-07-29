@@ -10,7 +10,6 @@ const bot = require("./telegramBot/telegramBotTest.js");
 const axios = require("axios");
 const { Scenes, Stage, session, Markup } = require("telegraf");
 app.use(express.json());
-app.use(bot.webhookCallback(`/bot${process.env.TELEGRAM_BOT_API}`));
 app.use(cors());
 
 mongoose
@@ -141,7 +140,7 @@ const superWizard = new Scenes.WizardScene(
       ctx.session.type === "Tech"
         ? "https://t.me/kodeverse/"
         : "https://t.me/kodeverseNT/";
-    ctx.reply("2)Company Name: ");
+    ctx.reply("2) Company Name: ");
     return ctx.wizard.next();
   },
   (ctx) => {
@@ -167,7 +166,7 @@ const superWizard = new Scenes.WizardScene(
   (ctx) => {
     ctx.session.email = ctx.message.text;
     ctx.reply(
-      "6) Do you want message for:\n1. Telegram\n2.Twitter\n3.Linkedin"
+      "6) Do you want message for:\n1. Telegram\n2. Twitter\n3. Linkedin\n4. For All 3"
     );
     return ctx.wizard.next();
   },
@@ -177,7 +176,9 @@ const superWizard = new Scenes.WizardScene(
         ? "Telegram"
         : ctx.message.text === "2"
         ? "Twitter"
-        : "Linkedin";
+        : ctx.message.text === "3"
+        ? "Linkedin"
+        : "All";
     ctx.session.twitter_hashtags =
       "#portfolio #job #kodeverse #jobs #resume #hiring #share #cv #recruiting #career #" +
       ctx.session.company_name;
@@ -202,12 +203,24 @@ const superWizard = new Scenes.WizardScene(
         `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
       );
       ctx.scene.leave();
-    } else {
+    } else if (ctx.session.message_for === "Linkedin") {
       bot.telegram.sendMessage(
         ctx.chat.id,
         `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
       );
       ctx.scene.leave();
+    } else {
+      ctx.reply(
+        `Telegram\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
+      );
+
+      ctx.reply(
+        `Twitter\n\nCompany: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: Check Linkedin Job Posts | Career Site\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Us: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
+      );
+
+      ctx.reply(
+        `Linkedin\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: Check Linkedin Job Posts | Career Site\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}\n${ctx.session.twitter_hashtags}`
+      );
     }
     return ctx.wizard.next();
   }
