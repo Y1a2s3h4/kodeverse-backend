@@ -254,4 +254,4 @@ bot.hears("/show_message", (ctx) => {
     `Your Message Looks Like This:-\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nHashtags: ${ctx.session.hashtags}\nJoin Community: ${ctx.session.community}`
   );
 });
-bot.launch();
+bot.startPolling();
