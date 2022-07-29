@@ -116,17 +116,9 @@ app.use(cors());
 const superWizard = new Scenes.WizardScene(
   "super-wizard",
   (ctx) => {
-    // if (ctx.session.company_name) {
     ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech");
     ctx.session.command = ctx.message.text;
     return ctx.wizard.next();
-    // } else {
-    //   ctx.reply("1)Company Name:");
-    //   ctx.session.company_name = ctx.message.text;
-    //   console.log(ctx.chat, ctx.session, ctx.message.text);
-
-    //   return ctx.wizard.next();
-    // }
   },
   (ctx) => {
     ctx.session.type = ctx.message.text === "1" ? "Tech" : "Non-Tech";
@@ -139,7 +131,6 @@ const superWizard = new Scenes.WizardScene(
     return ctx.wizard.next();
   },
   (ctx) => {
-    // if (ctx.session.type) {
     ctx.session.company_name = ctx.message.text;
     ctx.reply("3) Job: Check Linkedin Page Job Posts | Thier  Career Site");
     ctx.reply("4) Domain: IT, Software, Product, Engineering, Management");
@@ -150,13 +141,6 @@ const superWizard = new Scenes.WizardScene(
         : "HR, Marketing, Operations, Finance, Sales";
     ctx.reply("5) Email:");
     return ctx.wizard.next();
-    // } else {
-    //   ctx.reply("2) Type:");
-
-    //   ctx.session.type = ctx.message.text;
-    //   console.log(ctx.chat, ctx.session, ctx.message.text);
-    //   return ctx.wizard.next();
-    // }
   },
   (ctx) => {
     ctx.session.email = ctx.message.text;

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const Jobs = new mongoose.Schema({
   createdAt: {
     type: Date,
