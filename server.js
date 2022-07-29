@@ -222,6 +222,9 @@ superWizard.action("delete", (ctx) => {
   ctx.scene.leave();
 });
 const stage = new Scenes.Stage([superWizard]);
+bot.catch((err, ctx) => {
+  console.log(`Ooops, encountered an error for ${ctx.updateType}`, err);
+});
 bot.use(session());
 bot.use(stage.middleware());
 bot.command("start", (ctx) => {
