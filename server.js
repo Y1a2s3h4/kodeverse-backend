@@ -6,9 +6,9 @@ const mongoose = require("mongoose");
 const Jobs = require("./models/jobs.models");
 const cors = require("cors");
 const rwClient = require("./tweetClient/tweetClient.js");
-const bot = require("./telegramBot/telegramBotTest.js");
 const axios = require("axios");
-const { Scenes, Stage, session, Markup } = require("telegraf");
+const { Scenes, Stage, session, Markup, Telegraf } = require("telegraf");
+const bot = new Telegraf(process.env.TELEGRAM_BOT_API);
 app.use(express.json());
 app.use(cors());
 
@@ -113,11 +113,6 @@ app.delete("/delete/job", async (req, res) => {
 app.listen(PORT, () =>
   console.log("🔥 Server Running on http://localhost:" + PORT)
 );
-
-// bot.action("message_func", (ctx) => {
-//   ctx.reply("Enter Your Message In The Given Format");
-// });
-
 const superWizard = new Scenes.WizardScene(
   "super-wizard",
   (ctx) => {
