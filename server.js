@@ -122,7 +122,7 @@ const superWizard = new Scenes.WizardScene(
   },
   (ctx) => {
     ctx.session.type = ctx.message.text === "1" ? "Tech" : "Non-Tech";
-    ctx.session.groups = { Tech: -1001727141534, "Non-Tech": -1001727141534 };
+    ctx.session.groups = { Tech: -514549590, "Non-Tech": -1001727141534 };
     ctx.session.community =
       ctx.session.type === "Tech"
         ? "https://t.me/kodeverse/"
