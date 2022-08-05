@@ -116,13 +116,18 @@ app.use(cors());
 const superWizard = new Scenes.WizardScene(
   "super-wizard",
   (ctx) => {
-    ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech");
+    ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech\n3. Both");
     ctx.session.command = ctx.message.text;
     return ctx.wizard.next();
   },
   (ctx) => {
-    ctx.session.type = ctx.message.text === "1" ? "Tech" : "Non-Tech";
-    ctx.session.groups = { Tech: -514549590, "Non-Tech": -1001727141534 };
+    ctx.session.type =
+      ctx.message.text === "1"
+        ? "Tech"
+        : ctx.message.text === "2"
+        ? "Non-Tech"
+        : "Both";
+    ctx.session.groups = { Tech: -514549590, "Non-Tech": -514549590 };
     ctx.session.community =
       ctx.session.type === "Tech"
         ? "https://t.me/kodeverse/"
@@ -132,13 +137,13 @@ const superWizard = new Scenes.WizardScene(
   },
   (ctx) => {
     ctx.session.company_name = ctx.message.text;
-    ctx.reply("3) Job: Check Linkedin Page Job Posts | Thier  Career Site");
-    ctx.reply("4) Domain: IT, Software, Product, Engineering, Management");
-    ctx.session.job = "Check Linkedin Page Job Posts | Thier  Career Site";
     ctx.session.domain =
       ctx.session.type === "Tech"
         ? "IT, Software, Product, Engineering, Management"
         : "HR, Marketing, Operations, Finance, Sales";
+    ctx.reply("3) Job: Check Linkedin Page Job Posts | Thier  Career Site");
+    ctx.reply("4) Domain: " + ctx.session.domain);
+    ctx.session.job = "Check Linkedin Page Job Posts | Thier  Career Site";
     ctx.reply("5) Email:");
     return ctx.wizard.next();
   },
@@ -162,6 +167,7 @@ const superWizard = new Scenes.WizardScene(
       "#portfolio #job #kodeverse #jobs #resume #hiring #share #cv #recruiting #career #" +
       ctx.session.company_name;
     if (ctx.session.message_for === "Telegram") {
+      console.log(ctx.session);
       bot.telegram.sendMessage(
         ctx.chat.id,
         `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`,
