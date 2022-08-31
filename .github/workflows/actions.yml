@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v1
       - run: npm install
       - name: Bot
-        run: echo "Test Echo"
+        run: echo ${{ secrets.TELEGRAM_BOT_API }}
       - name: Run server.js
         run: node server.js
         env:
