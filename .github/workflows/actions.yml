@@ -12,11 +12,10 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
       - run: npm install
+      - name: Bot
+        run: echo ${{secrets.TELEGRAM_BOT_API}}
       - name: Run server.js
         run: node server.js
         env:
           TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
-      - name: Bot
-        run:
-          echo ${{secrets.TELEGRAM_BOT_API}}
           # TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID  }}
