@@ -1,0 +1,19 @@
+name: "Github Actions Pragmatic Programmer Bot"
+
+on:
+  push:
+  schedule:
+    - cron: "* * * * *"
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: npm install
+      - name: Run server.js
+        run: node server.js
+        env:
+          TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+          # TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID  }}

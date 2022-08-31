@@ -1,12 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 5000;
-const mongoose = require("mongoose");
-const Jobs = require("./models/jobs.models");
 const cors = require("cors");
-const rwClient = require("./tweetClient/tweetClient.js");
-const axios = require("axios");
 const { Scenes, Stage, session, Markup, Telegraf } = require("telegraf");
 const bot = new Telegraf(process.env.TELEGRAM_BOT_API);
 app.use(express.json());
