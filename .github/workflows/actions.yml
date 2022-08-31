@@ -1,4 +1,4 @@
-name: "Github Actions Pragmatic Programmer Bot"
+name: "Kodeverse Bot"
 
 on:
   push:
@@ -16,4 +16,7 @@ jobs:
         run: node server.js
         env:
           TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+      - name: Bot
+        run:
+          echo ${{secrets.TELEGRAM_BOT_API}}
           # TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID  }}
