@@ -3,7 +3,7 @@ name: "Kodeverse Bot"
 on:
   push:
   schedule:
-    - cron: "0 07 * * *"
+    - cron: "* * * * *"
 
 jobs:
   bot:
