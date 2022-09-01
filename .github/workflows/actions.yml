@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node
+        uses: actions/setup-node@v3
       - run: npm install
       - name: Bot
         run: echo ${{ secrets.TELEGRAM_BOT_API }}
