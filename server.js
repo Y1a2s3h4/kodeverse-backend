@@ -2,14 +2,30 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { Scenes, Stage, session, Markup, Telegraf } = require("telegraf");
+const fs = require("fs");
+const {
+  Scenes,
+  Composer,
+  Stage,
+  session,
+  Markup,
+  Telegraf,
+} = require("telegraf");
 const bot = new Telegraf(process.env.TELEGRAM_BOT_API);
 app.use(express.json());
 app.use(cors());
-
+// const itemSelector = new Composer();
+// itemSelector.action("redo", async (ctx) => {
+//   await ctx.reply("Restarting Session!");
+//   ctx.session = {};
+//   console.log("Redo", ctx.wizard.selectStep(0));
+//   await ctx.answerCbQuery();
+//   return ctx.wizard.next();
+// });
 const superWizard = new Scenes.WizardScene(
   "super-wizard",
   (ctx) => {
+    console.log(ctx.message, ctx?.callbackQuery?.message);
     ctx.reply("1) Type of message:\n1. Tech\n2. Non-Tech");
     ctx.session.command = ctx.message.text;
     return ctx.wizard.next();
@@ -60,22 +76,31 @@ const superWizard = new Scenes.WizardScene(
       ctx.session.company_details = ctx.message.text.split("\n\n").map((e) => {
         return { name: e.split("\n")[0], email: e.split("\n")[1] };
       });
-      for (let detail of ctx.session.company_details) {
-        ctx.reply(
-          `Company Name: ${detail.name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${detail.email}\n\nJoin Community: ${ctx.session.community}`
-        );
+      for (let index in ctx.session.company_details) {
+        setTimeout(() => {
+          ctx.reply(
+            `Company Name: ${ctx.session.company_details[index].name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.company_details[index].email}\n\nJoin Community: ${ctx.session.community}`
+          );
+        }, 1000 * index);
       }
-      bot.telegram.sendMessage(ctx.chat.id, `Perform Action`, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "Confirm & Send!", callback_data: "confirm" },
-              { text: "Redo!", callback_data: "redo" },
-              { text: "Stop!", callback_data: "stop" },
+      // for (let detail of ctx.session.company_details) {
+      //   ctx.reply(
+      //     `Company Name: ${detail.name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${detail.email}\n\nJoin Community: ${ctx.session.community}`
+      //   );
+      // }
+      setTimeout(() => {
+        bot.telegram.sendMessage(ctx.chat.id, `Perform Action`, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "Confirm & Send!", callback_data: "confirm" },
+                { text: "Redo!", callback_data: "redo" },
+                { text: "Stop!", callback_data: "stop" },
+              ],
             ],
-          ],
-        },
-      });
+          },
+        });
+      }, 1000 * ctx.session.company_details.length);
     }
     return ctx.wizard.next();
   }
@@ -90,7 +115,34 @@ superWizard.action("confirm", (ctx) => {
       ctx.session.groups[ctx.session.type],
       `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
     );
+    fs.writeFileSync(
+      "./temp_files/file.json",
+      JSON.stringify(ctx.session, null, 2),
+      {
+        encoding: "utf-8",
+      },
+      function (err) {
+        if (err) console.log("Error occurred", err);
+        console.log("File write successfull");
+      }
+    );
+    ctx
+      .replyWithDocument({ source: "./temp_files/file.json" })
+      .then((data) => {
+        console.log(data);
+        fs.unlink("./temp_files/file.json", (err) => {
+          if (err) console.log(err);
+          else {
+            console.log("\nDeleted file: ./temp_files/file.json");
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     ctx.reply("Message Send 👍");
+
     // ctx.scene.leave();
   } else {
     for (let index in ctx.session.company_details) {
@@ -101,19 +153,53 @@ superWizard.action("confirm", (ctx) => {
         );
       }, 10000 * index);
     }
-    ctx.reply("All Message Send 👍");
+    let lengthOfAllMessages = ctx.session.company_details.length - 1;
+    setTimeout(() => {
+      ctx.reply("All Message Send 👍");
+      fs.writeFileSync(
+        "./temp_files/file.json",
+        JSON.stringify(ctx.session, null, 2),
+        {
+          encoding: "utf-8",
+        },
+        function (err) {
+          if (err) console.log("Error occurred", err);
+          console.log("File write successfull");
+        }
+      );
+      ctx
+        .replyWithDocument({ source: "./temp_files/file.json" })
+        .then((data) => {
+          console.log(data);
+          fs.unlink("./temp_files/file.json", (err) => {
+            if (err) console.log(err);
+            else {
+              console.log("\nDeleted file: ./temp_files/file.json");
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, lengthOfAllMessages * 10000);
+
     // ctx.scene.leave();
   }
 });
+
+// superWizard
+
 superWizard.action("redo", (ctx) => {
   ctx.reply("Restarting Session!");
   ctx.session = {};
-  ctx.scene.leave();
-  ctx.scene.enter("super-wizard");
+  ctx.reply("Please Click Here To Redo The Sesssion /start");
+
+  // ctx.wizard.selectStep(0);
+  // return ctx.wizard.step(ctx);
 });
-superWizard.action("stop", (ctx) => {
+superWizard.action("delete", (ctx) => {
   ctx.session = {};
-  ctx.reply("Session Stopped!");
+  ctx.reply("Session Stopped & Deleted!");
   ctx.scene.leave();
 });
 const stage = new Scenes.Stage([superWizard]);
@@ -122,13 +208,19 @@ bot.catch((err, ctx) => {
 });
 bot.use(session());
 bot.use(stage.middleware());
-bot.command("start", (ctx) => {
-  ctx.scene.enter("super-wizard");
+bot.command("start", async (ctx) => {
+  const chatMember = await bot.telegram.getChatMember(-514549590, 951422798);
+  if (chatMember === "administrator" || "creator") {
+    ctx.scene.enter("super-wizard");
+  } else {
+    ctx.reply("You are Not Admin ");
+  }
+  console.log(chatMember);
 });
 
 bot.hears("/show_message", (ctx) => {
   ctx.reply(
-    `Your Message Looks Like This:-\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nHashtags: ${ctx.session.hashtags}\nJoin Community: ${ctx.session.community}`
+    `Your Message Looks Like This:-\n\nCompany Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\nJoin Community: ${ctx.session.community}`
   );
 });
 bot.launch();

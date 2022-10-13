@@ -1,0 +1,31 @@
+{
+  "__scenes": {
+    "current": "super-wizard",
+    "state": {},
+    "cursor": 4
+  },
+  "command": "/start",
+  "type": "Non-Tech",
+  "groups": {
+    "Tech": -514549590,
+    "Non-Tech": -514549590
+  },
+  "community": "https://t.me/kodeverseNT/",
+  "update": "many",
+  "job": "Check Linkedin Page Job Posts | Thier  Career Site",
+  "domain": "HR, Marketing, Operations, Finance, Sales",
+  "company_details": [
+    {
+      "name": "Google",
+      "email": "career@google.com"
+    },
+    {
+      "name": "Meta",
+      "email": "career@meta.com"
+    },
+    {
+      "name": "Netflix",
+      "email": "career@netflix.com"
+    }
+  ]
+}
