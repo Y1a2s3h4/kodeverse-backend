@@ -224,3 +224,6 @@ bot.hears("/show_message", (ctx) => {
   );
 });
 bot.launch();
+app.listen(process.env.PORT, () =>
+  console.log("Sever is running on port " + process.env.PORT)
+);
