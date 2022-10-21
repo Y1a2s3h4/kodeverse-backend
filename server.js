@@ -224,6 +224,6 @@ bot.hears("/show_message", (ctx) => {
   );
 });
 bot.launch();
-app.listen(process.env.PORT, () =>
-  console.log("Sever is running on port " + process.env.PORT)
-);
+// Enable graceful stop
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
