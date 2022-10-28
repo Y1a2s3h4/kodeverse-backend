@@ -118,7 +118,7 @@ superWizard.action("confirm", (ctx) => {
     );
     console.log();
     fs.writeFile(
-      __dirname + "\\temp_files\\file.json",
+      __dirname + "/temp_files/file.json",
       JSON.stringify(ctx.session, null, 2),
       {
         encoding: "utf-8",
@@ -129,14 +129,14 @@ superWizard.action("confirm", (ctx) => {
       }
     );
     ctx
-      .replyWithDocument({ source: __dirname + "\\temp_files\\file.json" })
+      .replyWithDocument({ source: __dirname + "/temp_files/file.json" })
       .then((data) => {
         console.log(data);
-        fs.unlink(__dirname + "\\temp_files\\file.json", (err) => {
+        fs.unlink(__dirname + "/temp_files/file.json", (err) => {
           if (err) console.log(err);
           else {
             console.log(
-              "\nDeleted file: " + __dirname + "\\temp_files\\file.json"
+              "\nDeleted file: " + __dirname + "/temp_files/file.json"
             );
           }
         });
@@ -165,7 +165,7 @@ superWizard.action("confirm", (ctx) => {
       ctx.reply("All Message Send 👍");
       console.log("Dirname: ", __dirname);
       fs.writeFile(
-        __dirname + "\\temp_files\\file.json",
+        __dirname + "/temp_files/file.json",
         JSON.stringify(ctx.session, null, 2),
         {
           encoding: "utf-8",
@@ -179,14 +179,14 @@ superWizard.action("confirm", (ctx) => {
         }
       );
       ctx
-        .replyWithDocument({ source: __dirname + "\\temp_files\\file.json" })
+        .replyWithDocument({ source: __dirname + "/temp_files/file.json" })
         .then((data) => {
           console.log(data);
-          fs.unlink(__dirname + "\\temp_files\\file.json", (err) => {
+          fs.unlink(__dirname + "/temp_files/file.json", (err) => {
             if (err) console.log(err);
             else {
               console.log(
-                "\nDeleted file: " + __dirname + "\\temp_files\\file.json"
+                "\nDeleted file: " + __dirname + "/temp_files/file.json"
               );
             }
           });
