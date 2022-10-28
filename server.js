@@ -153,35 +153,35 @@ superWizard.action("confirm", (ctx) => {
         );
       }, 10000 * index);
     }
-    let lengthOfAllMessages = ctx.session.company_details.length - 1;
-    setTimeout(() => {
-      ctx.reply("All Message Send 👍");
-      fs.writeFileSync(
-        "./temp_files/file.json",
-        JSON.stringify(ctx.session, null, 2),
-        {
-          encoding: "utf-8",
-        },
-        function (err) {
-          if (err) console.log("Error occurred", err);
-          console.log("File write successfull");
-        }
-      );
-      ctx
-        .replyWithDocument({ source: "./temp_files/file.json" })
-        .then((data) => {
-          console.log(data);
-          fs.unlink("./temp_files/file.json", (err) => {
-            if (err) console.log(err);
-            else {
-              console.log("\nDeleted file: ./temp_files/file.json");
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+    // let lengthOfAllMessages = ctx.session.company_details.length - 1;
+    // setTimeout(() => {
+    ctx.reply("All Message Send 👍");
+    fs.writeFileSync(
+      "./temp_files/file.json",
+      JSON.stringify(ctx.session, null, 2),
+      {
+        encoding: "utf-8",
+      },
+      function (err) {
+        if (err) console.log("Error occurred", err);
+        console.log("File write successfull");
+      }
+    );
+    ctx
+      .replyWithDocument({ source: "./temp_files/file.json" })
+      .then((data) => {
+        console.log(data);
+        fs.unlink("./temp_files/file.json", (err) => {
+          if (err) console.log(err);
+          else {
+            console.log("\nDeleted file: ./temp_files/file.json");
+          }
         });
-    }, lengthOfAllMessages * 10000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // }, lengthOfAllMessages * 10000);
 
     // ctx.scene.leave();
   }
