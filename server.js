@@ -115,7 +115,7 @@ superWizard.action("confirm", (ctx) => {
       ctx.session.groups[ctx.session.type],
       `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
     );
-    fs.writeFileSync(
+    fs.writeFile(
       "./temp_files/file.json",
       JSON.stringify(ctx.session, null, 2),
       {
@@ -156,7 +156,7 @@ superWizard.action("confirm", (ctx) => {
     // let lengthOfAllMessages = ctx.session.company_details.length - 1;
     // setTimeout(() => {
     ctx.reply("All Message Send 👍");
-    fs.writeFileSync(
+    fs.writeFile(
       "./temp_files/file.json",
       JSON.stringify(ctx.session, null, 2),
       {
