@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 const {
   Scenes,
   Composer,
@@ -115,8 +116,9 @@ superWizard.action("confirm", (ctx) => {
       ctx.session.groups[ctx.session.type],
       `Company Name: ${ctx.session.company_name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.email}\n\nJoin Community: ${ctx.session.community}`
     );
+    console.log();
     fs.writeFile(
-      "./temp_files/file.json",
+      __dirname + "\\temp_files\\file.json",
       JSON.stringify(ctx.session, null, 2),
       {
         encoding: "utf-8",
@@ -127,13 +129,15 @@ superWizard.action("confirm", (ctx) => {
       }
     );
     ctx
-      .replyWithDocument({ source: "./temp_files/file.json" })
+      .replyWithDocument({ source: __dirname + "\\temp_files\\file.json" })
       .then((data) => {
         console.log(data);
-        fs.unlink("./temp_files/file.json", (err) => {
+        fs.unlink(__dirname + "\\temp_files\\file.json", (err) => {
           if (err) console.log(err);
           else {
-            console.log("\nDeleted file: ./temp_files/file.json");
+            console.log(
+              "\nDeleted file: " + __dirname + "\\temp_files\\file.json"
+            );
           }
         });
       })
@@ -147,41 +151,50 @@ superWizard.action("confirm", (ctx) => {
   } else {
     for (let index in ctx.session.company_details) {
       setTimeout(() => {
+        console.log(
+          "index: " + index + " " + ctx.session.company_details[index].name
+        );
         bot.telegram.sendMessage(
           ctx.session.groups[ctx.session.type],
           `Company Name: ${ctx.session.company_details[index].name}\nType: ${ctx.session.type}\n\nJob: ${ctx.session.job}\nDomain: ${ctx.session.domain}\nEmail: ${ctx.session.company_details[index].email}\n\nJoin Community: ${ctx.session.community}`
         );
       }, 10000 * index);
     }
-    // let lengthOfAllMessages = ctx.session.company_details.length - 1;
-    // setTimeout(() => {
-    ctx.reply("All Message Send 👍");
-    fs.writeFile(
-      "./temp_files/file.json",
-      JSON.stringify(ctx.session, null, 2),
-      {
-        encoding: "utf-8",
-      },
-      function (err) {
-        if (err) console.log("Error occurred", err);
-        console.log("File write successfull");
-      }
-    );
-    ctx
-      .replyWithDocument({ source: "./temp_files/file.json" })
-      .then((data) => {
-        console.log(data);
-        fs.unlink("./temp_files/file.json", (err) => {
-          if (err) console.log(err);
-          else {
-            console.log("\nDeleted file: ./temp_files/file.json");
+    let lengthOfAllMessages = ctx.session.company_details.length - 1;
+    setTimeout(() => {
+      ctx.reply("All Message Send 👍");
+      console.log("Dirname: ", __dirname);
+      fs.writeFile(
+        __dirname + "\\temp_files\\file.json",
+        JSON.stringify(ctx.session, null, 2),
+        {
+          encoding: "utf-8",
+        },
+        function (err) {
+          if (err) {
+            console.log("Error occurred", err);
+          } else {
+            console.log("File write successfull");
           }
+        }
+      );
+      ctx
+        .replyWithDocument({ source: __dirname + "\\temp_files\\file.json" })
+        .then((data) => {
+          console.log(data);
+          fs.unlink(__dirname + "\\temp_files\\file.json", (err) => {
+            if (err) console.log(err);
+            else {
+              console.log(
+                "\nDeleted file: " + __dirname + "\\temp_files\\file.json"
+              );
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }, lengthOfAllMessages * 10000);
+    }, lengthOfAllMessages * 10000);
 
     // ctx.scene.leave();
   }
