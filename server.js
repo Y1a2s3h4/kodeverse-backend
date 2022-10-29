@@ -135,12 +135,14 @@ superWizard.action("confirm", (ctx) => {
       .replyWithDocument({ source: "file.json" })
       .then((data) => {
         console.log(data);
+        console.log("Before Unlink: ", dirdata);
         fs.unlink("file.json", (err) => {
           if (err) console.log(err);
           else {
             console.log("\nDeleted file: " + "file.json");
           }
         });
+        console.log("After Unlink: ", dirdata);
       })
       .catch((err) => {
         console.log(err);
@@ -182,12 +184,15 @@ superWizard.action("confirm", (ctx) => {
         .replyWithDocument({ source: "file.json" })
         .then((data) => {
           console.log(data);
+          console.log("Before Unlink: ", dirdata);
+
           fs.unlink("file.json", (err) => {
             if (err) console.log(err);
             else {
               console.log("\nDeleted file: " + "file.json");
             }
           });
+          console.log("Before Unlink: ", dirdata);
         })
         .catch((err) => {
           console.log(err);
