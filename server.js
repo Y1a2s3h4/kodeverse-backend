@@ -127,8 +127,11 @@ superWizard.action("confirm", (ctx) => {
         encoding: "utf-8",
       },
       function (err) {
-        if (err) console.log("Error occurred", err);
-        console.log("File write successfull");
+        if (err) {
+          console.log("Error occurred", err);
+        } else {
+          console.log("File write successfull");
+        }
       }
     );
     ctx
@@ -137,8 +140,9 @@ superWizard.action("confirm", (ctx) => {
         console.log(data);
         console.log("Before Unlink: ", dirdata);
         fs.unlink("file.json", (err) => {
-          if (err) console.log(err);
-          else {
+          if (err) {
+            console.log(err);
+          } else {
             console.log("\nDeleted file: " + "file.json");
           }
         });
@@ -187,9 +191,10 @@ superWizard.action("confirm", (ctx) => {
           console.log("Before Unlink: ", dirdata);
 
           fs.unlink("file.json", (err) => {
-            if (err) console.log(err);
-            else {
-              console.log("\nDeleted file: " + "file.json");
+            if (err) {
+              console.log("Error occurred", err);
+            } else {
+              console.log("File Deleted successfull");
             }
           });
           console.log("After Unlink: ", dirdata);
