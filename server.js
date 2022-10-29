@@ -15,6 +15,9 @@ const {
 const bot = new Telegraf(process.env.TELEGRAM_BOT_API);
 app.use(express.json());
 app.use(cors());
+
+let dirdata = fs.readdirSync(__dirname);
+console.log(dirdata);
 // const itemSelector = new Composer();
 // itemSelector.action("redo", async (ctx) => {
 //   await ctx.reply("Restarting Session!");
@@ -161,7 +164,6 @@ superWizard.action("confirm", (ctx) => {
     let lengthOfAllMessages = ctx.session.company_details.length - 1;
     setTimeout(() => {
       ctx.reply("All Message Send 👍");
-      console.log("Dirname: ", __dirname);
       fs.writeFile(
         "file.json",
         JSON.stringify(ctx.session, null, 2),
