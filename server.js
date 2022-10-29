@@ -201,6 +201,7 @@ superWizard.action("confirm", (ctx) => {
 
     // ctx.scene.leave();
   }
+  ctx.session = {};
 });
 
 // superWizard
@@ -213,7 +214,7 @@ superWizard.action("redo", (ctx) => {
   // ctx.wizard.selectStep(0);
   // return ctx.wizard.step(ctx);
 });
-superWizard.action("delete", (ctx) => {
+superWizard.action("stop", (ctx) => {
   ctx.session = {};
   ctx.reply("Session Stopped & Deleted!");
   ctx.scene.leave();
