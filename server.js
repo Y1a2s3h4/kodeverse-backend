@@ -192,7 +192,7 @@ superWizard.action("confirm", (ctx) => {
               console.log("\nDeleted file: " + "file.json");
             }
           });
-          console.log("Before Unlink: ", dirdata);
+          console.log("After Unlink: ", dirdata);
         })
         .catch((err) => {
           console.log(err);
@@ -201,7 +201,6 @@ superWizard.action("confirm", (ctx) => {
 
     // ctx.scene.leave();
   }
-  ctx.session = {};
 });
 
 // superWizard
