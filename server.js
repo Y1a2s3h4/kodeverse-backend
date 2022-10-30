@@ -114,6 +114,7 @@ superWizard.command("/restart", (ctx) => {
   ctx.reply("Cancelled!!!");
 });
 superWizard.action("confirm", (ctx) => {
+  console.log("session: ", ctx.session);
   if (ctx.session.update === "one") {
     bot.telegram.sendMessage(
       ctx.session.groups[ctx.session.type],
@@ -134,25 +135,27 @@ superWizard.action("confirm", (ctx) => {
         }
       }
     );
-    ctx
-      .replyWithDocument({ source: "file.json" })
-      .then((data) => {
-        console.log(data);
-        console.log("Before Unlink: ", dirdata);
-        fs.unlink("file.json", (err) => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("\nDeleted file: " + "file.json");
-          }
-        });
-        console.log("After Unlink: ", dirdata);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
     ctx.reply("Message Send 👍");
+    ctx.reply("Generating JSON File ⚙");
+    setTimeout(() => {
+      ctx
+        .replyWithDocument({ source: "file.json" })
+        .then((data) => {
+          console.log(data);
+          console.log("Before Unlink: ", dirdata);
+          fs.unlink("file.json", (err) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("\nDeleted file: " + "file.json");
+            }
+          });
+          console.log("After Unlink: ", dirdata);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 2000);
 
     // ctx.scene.leave();
   } else {
@@ -170,6 +173,7 @@ superWizard.action("confirm", (ctx) => {
     let lengthOfAllMessages = ctx.session.company_details.length - 1;
     setTimeout(() => {
       ctx.reply("All Message Send 👍");
+      ctx.reply("Generating JSON File ⚙");
       fs.writeFile(
         "file.json",
         JSON.stringify(ctx.session, null, 2),
@@ -189,7 +193,6 @@ superWizard.action("confirm", (ctx) => {
         .then((data) => {
           console.log(data);
           console.log("Before Unlink: ", dirdata);
-
           fs.unlink("file.json", (err) => {
             if (err) {
               console.log("Error occurred", err);
