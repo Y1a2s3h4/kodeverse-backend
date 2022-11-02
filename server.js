@@ -234,11 +234,8 @@ bot.use(session());
 bot.use(stage.middleware());
 bot.command("start", async (ctx) => {
   const chatMember = await bot.telegram.getChatMember(-514549590, ctx.chat.id);
-  console.log("chatMember", chatMember);
   if (chatMember === "administrator" || chatMember === "creator") {
     ctx.scene.enter("super-wizard");
-  } else {
-    ctx.reply("You are Not Admin ");
   }
 });
 
