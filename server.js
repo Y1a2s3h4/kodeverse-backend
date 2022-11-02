@@ -233,9 +233,9 @@ bot.catch((err, ctx) => {
 bot.use(session());
 bot.use(stage.middleware());
 bot.command("start", async (ctx) => {
-  console.log("ctx", ctx.chat.id);
   const chatMember = await bot.telegram.getChatMember(-514549590, ctx.chat.id);
-  if (chatMember === "administrator" || "creator") {
+  console.log("chatMember", chatMember);
+  if (chatMember === "administrator" || chatMember === "creator") {
     ctx.scene.enter("super-wizard");
   } else {
     ctx.reply("You are Not Admin ");
