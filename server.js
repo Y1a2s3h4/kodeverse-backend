@@ -233,13 +233,13 @@ bot.catch((err, ctx) => {
 bot.use(session());
 bot.use(stage.middleware());
 bot.command("start", async (ctx) => {
-  const chatMember = await bot.telegram.getChatMember(-514549590, 951422798);
+  console.log("ctx", ctx.chat.id);
+  const chatMember = await bot.telegram.getChatMember(-514549590, ctx.chat.id);
   if (chatMember === "administrator" || "creator") {
     ctx.scene.enter("super-wizard");
   } else {
     ctx.reply("You are Not Admin ");
   }
-  console.log(chatMember);
 });
 
 bot.hears("/show_message", (ctx) => {
