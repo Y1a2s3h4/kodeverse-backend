@@ -235,7 +235,7 @@ bot.use(stage.middleware());
 bot.command("start", async (ctx) => {
   const chatMember = await bot.telegram.getChatMember(-514549590, ctx.chat.id);
   console.log("ctx.chat.id: ", ctx.chat.id, "chat_member:", chatMember);
-  if (chatMember === "administrator" || chatMember === "creator") {
+  if (chatMember.status === "administrator" || chatMember === "creator") {
     ctx.scene.enter("super-wizard");
   }
 });
